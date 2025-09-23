@@ -3,8 +3,10 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import {connectDB} from './Databases/db';
+import { errorHandler } from './Middlewares/errorHandler';
 import mainRouter from './Routers/main.Router';
 dotenv.config({path: './config/.env'});
+
 
 const app: Express = express();
 
@@ -18,7 +20,7 @@ app.use(cookieParser());
 //router
 app.use('/api/v1', mainRouter);
 
-
+app.use(errorHandler)
 
 connectDB();
 
