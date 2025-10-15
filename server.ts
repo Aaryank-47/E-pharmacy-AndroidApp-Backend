@@ -15,7 +15,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin: '*',
+    origin: 'exp://10.10.125.20:8081',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
@@ -32,5 +32,5 @@ connectDB();
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, async ()=>{
-    console.log(`Server is running on port http://localhost:${PORT}`);
+    console.log(`Server is running on port http://10.10.125.20:${PORT}`);
 } )

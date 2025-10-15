@@ -13,11 +13,11 @@ import { OAuth2Client, TokenPayload } from 'google-auth-library';
 
 
 export const signup = catchAsyncErrors(async (req: Request, res: Response, next: NextFunction) => {
-    const { name, email, password, address, phone } = req.body;
+    const { name, email, password, phone } = req.body;
     console.log("Request Body : ", req.body);
 
 
-    if (!name || !email || !password || !address || !phone) {
+    if (!name || !email || !password|| !phone) {
         return next(new ApiError(400, "All fields are required"));
     }
 
@@ -33,7 +33,6 @@ export const signup = catchAsyncErrors(async (req: Request, res: Response, next:
         name,
         email,
         password: hashedPassword,
-        address,
         phone
     })
     console.log("User created successfully : ", user);
@@ -52,7 +51,7 @@ export const login = catchAsyncErrors(async (req: Request, res: Response, next: 
     console.log("User found : ", userExist);
 
     if (!userExist) {
-        return next(new ApiError(400, "Invalid email or password"));
+        return next(new ApiError(400, "User Does not exist"));
     }
 
     const isPasswordMatched = await bcrypt.compare(password, userExist.password);
@@ -122,17 +121,23 @@ export const forgotPassword = catchAsyncErrors(async (req: Request, res: Respons
 
 export const verifyOtp = catchAsyncErrors(async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user?._id;
-    const { EnteredOtp } = req.body;
-
-    const otp = await redis.get(`otp:${userId}`);
-    console.log("otp : ", otp);
+    const { otp } = req.body;
+    console.log("Request Body : ", req.body);
 
     if (!otp) {
+        console.log("OTP not found");
+        return next(new ApiError(400, "OTP is required"));
+    }
+
+    const SystemGeneratedOtp = await redis.get(`otp:${userId}`);
+    console.log("SystemGeneratedOtp : ", SystemGeneratedOtp);
+
+    if (!SystemGeneratedOtp) {
         console.log("OTP not found");
         return next(new ApiError(400, "OTP expired"));
     }
 
-    if (EnteredOtp !== otp) {
+    if (SystemGeneratedOtp !== otp) {
         console.log("Invalid OTP");
         return next(new ApiError(400, "Invalid OTP"));
     }
@@ -141,15 +146,17 @@ export const verifyOtp = catchAsyncErrors(async (req: Request, res: Response, ne
 })
 
 export const ResetPassword = catchAsyncErrors(async (req: Request, res: Response, next: NextFunction) => {
-    const { newPassword } = req.body;
+    const { password } = req.body;
     const userId = req.user?._id;
 
-    if (!newPassword) {
+    console.log("Request Body : ", req.body);
+
+    if (!password) {
         return next(new ApiError(400, "New password is required"));
     }
 
     const salt = await bcrypt.genSalt(10);
-    const newHashedPassword = await bcrypt.hash(newPassword, salt);
+    const newHashedPassword = await bcrypt.hash(password, salt);
 
 
     const user = await UserModel.findByIdAndUpdate(userId, {
