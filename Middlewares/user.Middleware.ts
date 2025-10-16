@@ -20,7 +20,11 @@ export const userMiddleware = catchAsyncErrors(async (req: Request, res: Respons
         return next(new ApiError(401, "Unauthorized: No token provided"));
     }
 
+    console.log("Verifying token...........................................");
+
+    console.log("JWT Secret Key:", process.env.USER_SECRET_KEY);
     const decoded = jwt.verify(token, process.env.USER_SECRET_KEY as string) as { _id: string };
+    console.log("Handling error ...........................................");
     console.log("Decoded Token : ", decoded);
 
     const user = await userModel.findById(decoded._id);

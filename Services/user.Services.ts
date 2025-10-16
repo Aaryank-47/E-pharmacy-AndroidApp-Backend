@@ -42,6 +42,7 @@ export const signup = catchAsyncErrors(async (req: Request, res: Response, next:
 
 export const login = catchAsyncErrors(async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
+    console.log("Request Body : ", req.body);
 
     if (!email || !password) {
         return next(new ApiError(400, "All fields are required"));
