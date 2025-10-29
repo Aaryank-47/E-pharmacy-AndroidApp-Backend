@@ -8,7 +8,7 @@ import {
     googleAuthLogin,
     getUserProfile,
     updateUserProfile
-} from "../Services/user.Services";
+} from "../Services/user.Service";
 import { userMiddleware } from '../Middlewares/user.Middleware'
 
 const userRouter = Router();

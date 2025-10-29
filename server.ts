@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import {connectDB} from './Databases/db';
 import { errorHandler } from './Middlewares/errorHandler';
-import mainRouter from './Routers/main.Router';
+import mainRouter from './Routers/main.Routes';
 dotenv.config({path: './config/.env'});
 
 
