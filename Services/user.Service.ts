@@ -12,11 +12,20 @@ import { OAuth2Client, TokenPayload } from "google-auth-library";
 import RoleIndex from "../Utils/Roles.enum";
 import { uploadToCloudinary } from "../utils/cloudinaryUpload";
 
-// Signup
-export const signup = catchAsyncErrors(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { name, email, password, phone, age, dob, role, fcmToken, address } =
-      req.body;
+export default class UserService {
+  public static  signup = catchAsyncErrors(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const {
+         name,  
+          email,
+          password,
+          phone,
+          age,
+          dob,
+          role,
+          fcmToken,
+          address
+        } = req.body;
 
     console.log("Request Body : ", req.body);
 
@@ -127,7 +136,7 @@ export const signup = catchAsyncErrors(
 );
 
 // Login
-export const login = catchAsyncErrors(
+public static login = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     const { email, password, fcmToken, location } = req.body;
 
@@ -208,7 +217,7 @@ export const login = catchAsyncErrors(
 );
 
 //logout
-export const logout = catchAsyncErrors(
+public static logout = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     res.cookie("userToken", null, {
       httpOnly: true,
@@ -221,7 +230,7 @@ export const logout = catchAsyncErrors(
   }
 );
 
-export const forgotPassword = catchAsyncErrors(
+public static forgotPassword = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     const { email } = req.body;
     console.log("Request Body : ", req.body);
@@ -251,7 +260,7 @@ export const forgotPassword = catchAsyncErrors(
   }
 );
 
-export const verifyOtp = catchAsyncErrors(
+public static verifyOtp = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user?._id;
     const { otp } = req.body;
@@ -279,7 +288,7 @@ export const verifyOtp = catchAsyncErrors(
   }
 );
 
-export const ResetPassword = catchAsyncErrors(
+public static ResetPassword = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     const { password } = req.body;
     const userId = req.user?._id;
@@ -314,7 +323,7 @@ export const ResetPassword = catchAsyncErrors(
   }
 );
 
-export const googleAuthLogin = catchAsyncErrors(
+public static googleAuthLogin = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
     console.log("Clent : ", client);
@@ -336,7 +345,7 @@ export const googleAuthLogin = catchAsyncErrors(
     }
 
     const name = payload.name ?? payload.given_name ?? "Unknown User";
-    const email = payload.email;
+    const {email} = payload;
 
     if (!name || !email) {
       return next(new ApiError(400, "Invalid token"));
@@ -382,7 +391,7 @@ export const googleAuthLogin = catchAsyncErrors(
 );
 
 // Get User Profile
-export const getUserProfile = catchAsyncErrors(
+public static getUserProfile = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user?._id;
     console.log("User Id : ", userId);
@@ -427,7 +436,7 @@ export const getUserProfile = catchAsyncErrors(
   }
 );
 
-export const updateUserProfile = catchAsyncErrors(
+public static updateUserProfile = catchAsyncErrors(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.user?._id;
     console.log("User Id : ", userId);
@@ -481,7 +490,9 @@ export const updateUserProfile = catchAsyncErrors(
       }
     }
 
-    if (ProfileImage && Array.isArray(ProfileImage)) {
+    if (
+      ProfileImage && Array.isArray(ProfileImage)
+    ) {
       user.ProfileImage = [...(user.ProfileImage || []), ...ProfileImage];
 
       if (user.ProfileImage.length > 5) {
@@ -516,3 +527,4 @@ export const updateUserProfile = catchAsyncErrors(
     );
   }
 );
+}

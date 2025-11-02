@@ -1,5 +1,5 @@
 import express from "express";
-import CategoryService from "../../Services/category.Service";
+import CategoryService, { CategoryLogService } from "../../Services/category.Service";
 import upload from "../../config/multer";
 import { adminMiddleware } from "../../Middlewares/CheckLoginMiddleware";
 import { CATEGORY_CONSTANTS } from "../../types/Category";
@@ -17,6 +17,8 @@ r.post(
   CategoryService.createCategory
 );
 
+r.get("/", CategoryService.getAllCategory);
+
 r.get("/list", CategoryService.getCategoriesSimple);
 
 r.get("/:id", CategoryService.getCategoryById);
@@ -31,12 +33,15 @@ r.put(
   CategoryService.updateCategory
 );
 
-r.delete("/:id", adminMiddleware, CategoryService.deleteCategory);
+r.delete("/:id", adminMiddleware, CategoryService.ActiovationCategory);
 
 r.patch(
-  "/bulk/toggle-active",
-  adminMiddleware,
-  CategoryService.bulkToggleActive
+  "/bulk/toggle-active",adminMiddleware, CategoryService.bulkToggleActive
 );
+
+r.get("/logs", adminMiddleware, CategoryLogService.getAllLogs);
+r.get("/logs/stats", adminMiddleware, CategoryLogService.getLogStats);
+r.get("/logs/date-range", adminMiddleware, CategoryLogService.getLogsByDateRange);
+r.get("/logs/:id", adminMiddleware, CategoryLogService.getLogById);
 
 export default router;

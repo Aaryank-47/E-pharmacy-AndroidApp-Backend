@@ -17,7 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors({
     origin: 'exp://10.168.86.226:8081',
     // origin: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 }));
