@@ -10,7 +10,7 @@ import { redis } from "../config/redis";
 import { sendEmail } from "../Utils/mailer";
 import { OAuth2Client, TokenPayload } from "google-auth-library";
 import RoleIndex from "../Utils/Roles.enum";
-import { uploadToCloudinary } from "../utils/cloudinaryUpload";
+import { uploadToCloudinary } from "../Utils/cloudinaryUpload";
 
 export default class UserService {
   public static  signup = catchAsyncErrors(
